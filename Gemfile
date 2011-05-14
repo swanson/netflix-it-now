@@ -1,2 +1,2 @@
-source :rubygems
+source :gemcutter
 gem 'sinatra'
