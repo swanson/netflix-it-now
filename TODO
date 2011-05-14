@@ -1,0 +1,3 @@
+* Bookmarklet to POST to app with movie id and email/user
+* Daily Rake cron to ping API
+* Hook into SendGrid free plan to send out email (batch up per user)
