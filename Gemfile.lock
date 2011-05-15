@@ -12,6 +12,7 @@ GEM
     mime-types (1.16)
     mongo (1.3.1)
       bson (>= 1.3.1)
+    nokogiri (1.4.4)
     oauth (0.4.4)
     polyglot (0.3.1)
     pony (1.2)
@@ -31,6 +32,7 @@ DEPENDENCIES
   SystemTimer
   bson_ext
   mongo
+  nokogiri
   oauth
   pony
   sinatra
