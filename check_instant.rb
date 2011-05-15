@@ -14,8 +14,7 @@ def check_instant(title_id)
                             "oauth_nonce"               =>  OAuth::Helper.generate_key,
                             "oauth_timestamp"           => OAuth::Helper.generate_timestamp}
     # sign the request
-    request.sign! \
-        :consumer_secret => OAuthKeys::ConsumerSecret
+    request.sign :consumer_secret => OAuthKeys::ConsumerSecret
 
     # make the API call
     info = Nokogiri::XML(open(request.signed_uri))
