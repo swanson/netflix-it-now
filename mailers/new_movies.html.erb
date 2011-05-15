@@ -1,0 +1,11 @@
+<span style="color:black">Hey! Some new movies that you tracked are now
+    available on Netflix Instant Watch.</span>
+<br />
+<br />
+<span style="color:black">Now available:</span>
+<% movies.each do |m| %>
+  <div>
+      <h3><a href="<%= m['link_url'] %>"><%= m['title'] %></a></h3>
+      <img src="<%= m['poster_url'] %>" />
+  </div>
+<% end %>
