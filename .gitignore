@@ -17,3 +17,6 @@ tmp
 _yardoc
 doc/
 *.sw*
+
+# KEYS KEYS KEYS
+oauth-keys.rb
