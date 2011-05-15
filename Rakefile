@@ -58,8 +58,12 @@ task :cron do
       end
     end
 
-    #update user tracked_movies to remove new_movies
-    send_mail(user['email'], new_movies.to_s)  
+    user['tracked_movies'] = user['tracked_movies'] - new_movies
+    $coll.update({"_id" => user["_id"]}, user)
+    
+    if new_movies.length > 0
+      send_mail(user['email'], new_movies.to_s)
+    end
   end
 end
 
