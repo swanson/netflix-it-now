@@ -10,28 +10,34 @@ def connect_to_mongo
   $coll = db.collection('netflix-users')
 end
 
+def send_mail(username, msg)
+  puts "Sending #{msg} to #{username}"
+end
+
 task :cron do
   puts "Running cron"
   connect_to_mongo
+
+  movie_cache = Hash.new
   $coll.find().each do |user|
+    puts "Checking for #{user['email']}"
+    new_movies = Array.new
     user['tracked_movies'].each do |id|
-      if check_instant(id)
-        Rake::Task['email:send'].invoke(user['email'], "Movie #{id} is done!")  
+      if movie_cache.has_key?(id)
+        puts 'Found it in the cache'
+        if movie_cache[id]
+            new_movies << id
+        end
+      else
+        puts 'Checking API'
+        is_instant = check_instant(id)
+        movie_cache[id] = is_instant
+        if is_instant
+          new_movies << id
+        end
       end
     end
+    send_mail(user['email'], new_movies.to_s)  
   end
 end
 
-
-namespace :email do
-  desc 'Send an email with Pony via SendGrid'
-  task :send, :email, :msg do |cmd, args|
-    puts "Sent #{args[:msg]} to #{args[:email]}"
-  end
-end
-
-namespace :netflix do
-  task :check_instant, :movie_id, :is_series do |cmd, args|
-    puts "check netflix api for #{args[:movie_id]}"
-  end
-end
