@@ -1,9 +1,27 @@
 require 'pony'
+require 'check_instant'
+require 'mongo'
+
+def connect_to_mongo
+  puts "Connecting to MongoDB"
+  uri = URI.parse(ENV['MONGOHQ_URL'])
+  conn = Mongo::Connection.from_uri(ENV['MONGOHQ_URL'])
+  db = conn.db(uri.path.gsub(/^\//, ''))
+  $coll = db.collection('netflix-users')
+end
 
 task :cron do
   puts "Running cron"
-  Rake::Task['email:send'].invoke('matt@test.com', 'sup')
+  connect_to_mongo
+  $coll.find().each do |user|
+    user['tracked_movies'].each do |id|
+      if check_instant(id)
+        Rake::Task['email:send'].invoke(user['email'], "Movie #{id} is done!")  
+      end
+    end
+  end
 end
+
 
 namespace :email do
   desc 'Send an email with Pony via SendGrid'
