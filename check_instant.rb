@@ -9,23 +9,19 @@ def check_instant(title_id)
     request = OAuth::RequestProxy.proxy \
         "method"        => "GET",
         "uri"           => "http://api.netflix.com/catalog/titles/movies/#{title_id}/format_availability",
-        "parameters"    => {"oauth_consumer_key" => OAuthKeys::ConsumerKey,
-                            "oauth_signature_method" => "HMAC-SHA1",
-                            "oauth_nonce" =>  OAuth::Helper.generate_key,
-                            "oauth_timestamp" => OAuth::Helper.generate_timestamp}
+        "parameters"    => {"oauth_consumer_key"        => OAuthKeys::ConsumerKey,
+                            "oauth_signature_method"    => "HMAC-SHA1",
+                            "oauth_nonce"               =>  OAuth::Helper.generate_key,
+                            "oauth_timestamp"           => OAuth::Helper.generate_timestamp}
     # sign the request
     request.sign! \
-        :consumer_secret    => OAuthKeys::ConsumerSecret
+        :consumer_secret => OAuthKeys::ConsumerSecret
 
     # make the API call
     info = Nokogiri::XML(open(request.signed_uri))
 
     # check for instant streaming
-    if info.xpath('//delivery_formats/availability/category[@term="instant"]').size > 0
-        return true
-    else
-        return false
-    end
+    return info.xpath('//delivery_formats/availability/category[@term="instant"]').size > 0
 end
 
 
