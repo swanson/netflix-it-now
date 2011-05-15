@@ -10,8 +10,25 @@ def connect_to_mongo
   $coll = db.collection('netflix-users')
 end
 
-def send_mail(username, msg)
-  puts "Sending #{msg} to #{username}"
+def send_mail(email, msg)
+  puts "Sending #{msg} to #{email}"
+  Pony.mail(
+    :from => 'netflix-instant-reminder',
+    :to => email,
+    :subject => 'Netflix Instant Reminder',
+    :body => msg,
+    :port => '587',
+    :via => :smtp,
+    :via_options => {
+      :address => ENV['EMAIL_SERVICE'],
+      :port => '587',
+      :enable_starttls_autp => true,
+      :user_name => ENV['SENDGRID_USERNAME'],
+      :password => ENV['SENDGRID_PASSWORD'],
+      :authentication => :plain,
+      :domain => ENV['SENDGRID_DOMAIN']
+    }
+  )
 end
 
 task :cron do
@@ -25,18 +42,23 @@ task :cron do
     user['tracked_movies'].each do |id|
       if movie_cache.has_key?(id)
         puts 'Found it in the cache'
+        
         if movie_cache[id]
             new_movies << id
         end
       else
         puts 'Checking API'
+        
         is_instant = check_instant(id)
         movie_cache[id] = is_instant
+        
         if is_instant
           new_movies << id
         end
       end
     end
+
+    #update user tracked_movies to remove new_movies
     send_mail(user['email'], new_movies.to_s)  
   end
 end
