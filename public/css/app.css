@@ -9,7 +9,7 @@ body {
 
 #content {
   width: 480px;
-  padding-top: 20px;
+  padding-top: 10px;
   padding-bottom: 20px;
   margin: 0 auto;
   background-color: white;
@@ -32,4 +32,38 @@ body {
 .logo {
   text-shadow: 2px 2px 0px #333;
   font-weight: normal;
+}
+
+h3 {
+  font-weight: normal;
+}
+
+#footer {
+  padding-top: 10px;
+}
+
+#footer p {
+  color: white;
+  font-size: 12px;
+  font-family: arial, helvetica, clean, sans-serif;
+}
+
+#footer p a {
+  color: white;
+  text-shadow: 1px 1px 0px #333;
+}
+
+.netflix-branding a {
+  color: white;
+  text-shadow: 1px 1px 0px #333;
+}
+
+.powered-by {
+  color: #C7403C;
+  padding-top: 5px;
+}
+
+.third-party a {
+  color: #C7403C;
+  text-decoration: none;
 }
