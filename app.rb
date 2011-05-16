@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'uri'
 require 'mongo'
+require 'json'
 
 class NetflixItNow < Sinatra::Base
   set :static, true
@@ -29,6 +30,6 @@ class NetflixItNow < Sinatra::Base
                     "tracked_movies" => [params[:movie_id].to_i,]
       })
     end
-    return {"success" => true}.to_json
+    return {:success => 'true'}.to_json
   end
 end
