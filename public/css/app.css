@@ -1,0 +1,35 @@
+body {
+  background-color:#B9090B;
+  font-family: "Futura Medium Condensed", futura, helvetica, clean, sans-serif; 
+}
+
+#header {
+  color: white;
+}
+
+#content {
+  width: 480px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 0 auto;
+  background-color: white;
+  color: #333333;
+
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+}
+
+#content ul {
+  list-style-image: url('/images/star.png')
+}
+
+.centered {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.logo {
+  text-shadow: 2px 2px 0px #333;
+  font-weight: normal;
+}

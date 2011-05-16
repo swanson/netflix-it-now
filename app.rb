@@ -14,7 +14,7 @@ class NetflixItNow < Sinatra::Base
   end
 
   get '/' do
-    "netflix it now!"
+    erb :index
   end
 
   post '/track' do
