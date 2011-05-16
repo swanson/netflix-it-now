@@ -4,18 +4,17 @@ require 'mongo'
 require 'json'
 require 'rack/cors'
 
-use Rack::Cors do |cfg|
-  cfg.allow do |allow|
-    allow.origins 'movies.netflix.com'
-
-    allow.resource '/track',
-        :methods => [:post],
-  end
-end
-
 class NetflixItNow < Sinatra::Base
   set :static, true
   set :public, 'public'
+
+  use Rack::Cors do |cfg|
+    cfg.allow do |allow|
+      allow.origins 'movies.netflix.com'
+
+      allow.resource '/track', :methods => [:post]
+    end
+  end
 
   configure do
     uri = URI.parse(ENV['MONGOHQ_URL'])
