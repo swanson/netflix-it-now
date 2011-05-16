@@ -2,7 +2,7 @@ require 'app'
 require 'rack/offline'
 
 map "/application.manifest" do
-  offline = Rack::Offline.configure do
+  offline = Rack::Offline.new :cache => true do
     cache "/tracked"
     network "/"
   end
