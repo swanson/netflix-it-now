@@ -41,4 +41,13 @@ class NetflixItNow < Sinatra::Base
     end
     return {:success => 'true'}.to_json
   end
+
+  get '/tracked' do
+      user = $coll.find("email" => params[:email]).first
+      unless user.nil?
+          return {:tracked => user['tracked_movies']}.to_json
+      else
+          halt 401
+      end
+  end
 end
