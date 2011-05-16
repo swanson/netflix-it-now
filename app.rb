@@ -29,6 +29,6 @@ class NetflixItNow < Sinatra::Base
                     "tracked_movies" => [params[:movie_id].to_i,]
       })
     end
-    return 200
+    return {:success => true}
   end
 end
