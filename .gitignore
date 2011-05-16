@@ -16,7 +16,10 @@ tmp
 .yardoc
 _yardoc
 doc/
+
+# Misc
 *.sw*
+.DS_Store
 
 # KEYS KEYS KEYS
 oauth-keys.rb
