@@ -5,6 +5,7 @@ GEM
     bson (1.3.1)
     bson_ext (1.3.1)
     i18n (0.5.0)
+    json (1.5.1)
     mail (2.3.0)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -18,6 +19,7 @@ GEM
     pony (1.2)
       mail (> 2.0)
     rack (1.2.2)
+    rack-cors (0.2.2)
     sinatra (1.2.1)
       rack (~> 1.1)
       tilt (< 2.0, >= 1.2.2)
@@ -31,8 +33,10 @@ PLATFORMS
 DEPENDENCIES
   SystemTimer
   bson_ext
+  json
   mongo
   nokogiri
   oauth
   pony
+  rack-cors
   sinatra
