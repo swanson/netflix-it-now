@@ -13,6 +13,7 @@ class NetflixItNow < Sinatra::Base
       allow.origins 'movies.netflix.com'
 
       allow.resource '/track', :methods => [:post]
+      allow.resource '/tracked', :methods => [:get]
     end
   end
 
@@ -39,15 +40,19 @@ class NetflixItNow < Sinatra::Base
                     "tracked_movies" => [params[:movie_id].to_i,]
       })
     end
-    return {:success => 'true'}.to_json
+    return 200
   end
 
   get '/tracked' do
-      user = $coll.find("email" => params[:email]).first
-      unless user.nil?
-          return {:tracked => user['tracked_movies']}.to_json
-      else
-          halt 401
-      end
+    # FIXME: use cookies or something to get the user
+    user = $coll.find("email" => "jevin@purdue.edu").first
+    unless user.nil?
+      # set the cache to expire in a day
+      headers["Cache-Control"] = "public, max-age=" + (60*60*24).to_s
+      return {:tracked => user["tracked_movies"]}.to_json
+    else
+      # no user found
+      halt 401
+    end
   end
 end
