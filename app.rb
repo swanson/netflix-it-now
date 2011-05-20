@@ -25,8 +25,19 @@ class NetflixItNow < Sinatra::Application
     $coll = db.collection('netflix-users')
   end
 
+  helpers do
+    def base_url
+      @base_url ||= "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
+    end
+  end
+
   get '/' do
     erb :index
+  end
+
+  get '/buttonizer.user.js' do
+    content_type :js
+    erb :buttonizer
   end
 
   post '/login' do
