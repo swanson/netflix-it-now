@@ -61,15 +61,8 @@ class CrxMake < Object
       @pkey_o = File.expand_path(@pkey_o)
       raise "private key output path is directory" if File.directory?(@pkey_o)
     else
-      count = 0
-      loop do
-        if count.zero?
-          @pkey_o = File.expand_path("./#{File.basename(@exdir)}.pem")
-        else
-          @pkey_o = File.expand_path("./#{File.basename(@exdir)}-#{count+=1}.pem")
-        end
-        break unless File.directory?(@pkey_o)
-      end
+      t = Tempfile.new([File.basename(@exdir), ".pem"])
+      @pkey_o = t.path
     end
     if @crx
       @crx = File.expand_path(@crx)
