@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- vim: set ts=2:sw=2:sts=2: -->
 <head>
   <title>Instant Reminders for Netflix</title>
   <link rel="stylesheet" href="css/app.css">
@@ -13,6 +14,19 @@
       <li><h3>Click the Instant Reminder button</h3></li>
       <li><h3>Get an email when the movie is available to stream</h3></li>
     </ul>
+    <div id="user-info" class="centered">
+      <span><% session[:email]%></span>
+      <% if session[:email] %>
+        Signed in as <% session[:email] %>.<br/>
+        <a href="/logout">Logout</a>
+      <% else %>
+        <form class="centered" action="/login" method="post">
+          <label for="email">Email: </label>
+          <input id="email" type="text" name="email"/><br/>
+          <input type="submit" value="Go!"/>
+        </form>
+      <% end %>
+  </div>
     <p class="centered">--- Installation Instructions ---</p>
     <br/><br/><br/><br/><br/>
   </div>

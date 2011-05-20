@@ -4,9 +4,10 @@ require 'mongo'
 require 'json'
 require 'rack/cors'
 
-class NetflixItNow < Sinatra::Base
+class NetflixItNow < Sinatra::Application
   set :static, true
   set :public, 'public'
+  enable :sessions
 
   use Rack::Cors do |cfg|
     cfg.allow do |allow|
@@ -28,6 +29,20 @@ class NetflixItNow < Sinatra::Base
     erb :index
   end
 
+  get '/check' do
+    return session[:email]
+  end
+
+  post '/login' do
+    session[:email] = params[:email]
+    redirect '/'
+  end
+
+  get '/logout' do
+    session[:email] = nil
+    redirect '/'
+  end
+
   post '/track' do
     user = $coll.find("email" => params[:email]).first
     unless user.nil?
@@ -44,6 +59,9 @@ class NetflixItNow < Sinatra::Base
   end
 
   get '/tracked' do
+    if !request.cookies.key?("user")
+      return 401
+    end
     # FIXME: use cookies or something to get the user
     user = $coll.find("email" => "jevin@purdue.edu").first
     unless user.nil?
@@ -56,3 +74,5 @@ class NetflixItNow < Sinatra::Base
     end
   end
 end
+
+# vim:ts=2:sw=2:sts=2
