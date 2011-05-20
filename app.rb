@@ -81,11 +81,6 @@ class NetflixItNow < Sinatra::Application
     end
   end
 
-  get '/buttonizer.crx' do
-    content_type 'application/x-chrome-extension'
-    return chrome_bundle
-  end
-
   post '/login' do
     session[:email] = params[:email]
     user = $coll.find("email" => session[:email]).first
