@@ -4,9 +4,10 @@ require 'mongo'
 require 'json'
 require 'rack/cors'
 
-class NetflixItNow < Sinatra::Base
+class NetflixItNow < Sinatra::Application
   set :static, true
   set :public, 'public'
+  enable :sessions
 
   use Rack::Cors do |cfg|
     cfg.allow do |allow|
@@ -28,24 +29,44 @@ class NetflixItNow < Sinatra::Base
     erb :index
   end
 
+  post '/login' do
+    session[:email] = params[:email]
+    user = $coll.find("email" => session[:email]).first
+    if user.nil?
+      $coll.insert({
+        "email" => session[:email],
+        "tracked_movies" => []
+      })
+    end
+    redirect '/'
+  end
+
+  get '/logout' do
+    session[:email] = nil
+    redirect '/'
+  end
+
   post '/track' do
-    user = $coll.find("email" => params[:email]).first
+    unless session[:email]
+      halt 401
+    end
+    user = $coll.find("email" => session[:email]).first
     unless user.nil?
       user['tracked_movies'] << params[:movie_id].to_i
       user['tracked_movies'].uniq!
       $coll.update({"_id" => user["_id"]}, user)
     else
-      $coll.insert({
-                    "email" => params[:email], 
-                    "tracked_movies" => [params[:movie_id].to_i,]
-      })
+      halt 401
     end
-    return 200
+    return
   end
 
   get '/tracked' do
-    # FIXME: use cookies or something to get the user
-    user = $coll.find("email" => "jevin@purdue.edu").first
+    unless session[:email]
+      # no user given
+      halt 401
+    end
+    user = $coll.find("email" => session[:email]).first
     unless user.nil?
       # set the cache to expire in a day
       headers["Cache-Control"] = "public, max-age=" + (60*60*24).to_s
@@ -56,3 +77,5 @@ class NetflixItNow < Sinatra::Base
     end
   end
 end
+
+# vim:ts=2:sw=2:sts=2

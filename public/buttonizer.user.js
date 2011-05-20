@@ -22,7 +22,7 @@ function get_title_id() {
 
 function req_notification() {
     $(btn_id).unbind('click');
-    $.post(url_base + "/track", {"email": "jevin@purdue.edu", "movie_id": get_title_id()})
+    $.post(url_base + "/track", {"movie_id": get_title_id()})
         .success(req_success)
         .error(disp_error_btn);
 }
@@ -54,6 +54,13 @@ function disp_track_btn() {
     $(btn_id).show();
 }
 
+function disp_login_btn() {
+    $(btn_id).removeClass().addClass(blue_btn_class);
+    $(btn_id+">span").text("Login to Tracker");
+    $(btn_id).attr('href', url_base);
+    $(btn_id).show();
+}
+
 function get_tracked() {
     // get the locally tracked movies
     var locally_tracked = JSON.parse(localStorage["tracked"])["tracked"];
@@ -64,8 +71,12 @@ function get_tracked() {
 }
 
 function got_tracked(json) {
+    // get the locally tracked movies
+    var locally_tracked = JSON.parse(localStorage["tracked"])["tracked"];
+    var remotely_tracked = JSON.parse(json)["tracked"];
+    var tracked = locally_tracked.concat(remotely_tracked);
     // check to see if the movie has already been tracked
-    if (get_tracked().indexOf(get_title_id()) < 0) {
+    if (tracked.indexOf(get_title_id()) < 0) {
         // it hasnt been, display a track button
         disp_track_btn();
     } else {
@@ -74,20 +85,33 @@ function got_tracked(json) {
     }
 }
 
-if (!check_instant()) {
-    // intialize the local storage, if needed
-    if (localStorage["tracked"] == null) {
-        localStorage["tracked"] = JSON.stringify({"tracked": []});
+function fetch_tracked_error(req) {
+    if (req.status == 401) {
+        disp_login_btn();
+    } else {
+        disp_error_btn();
     }
+}
 
+// make sure to send cookies in the AJAX requests
+$.ajaxSetup({
+    xhrFields: {withCredentials: true},
+});
+
+// intialize the local storage, if needed
+if (localStorage["tracked"] == null) {
+    localStorage["tracked"] = JSON.stringify({"tracked": []});
+}
+
+if (!check_instant()) {
     // create the button skeleton
     $("#mdp-actions>span[class='btnWrap mltBtn mltBtn-s50']")
         .prepend('<a id="' + btn_id_raw + '"><span class="inr"></span></a>');
     $(btn_id).hide()
 
     // check the server for already requested movies (cached)
-    $.getJSON(url_base + "/tracked")
+    $.get(url_base + "/tracked")
         .success(got_tracked)
-        .error(disp_error_btn);
+        .error(fetch_tracked_error);
 }
 
