@@ -22,7 +22,7 @@
       </div>
     <% else %>
       <div id="login">
-        <h2 class="centered">Instructions</h2>
+        <h2 class="centered">Installation Instructions</h2>
         <ol>
           <li>Firefox users must install
             <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/">
@@ -31,9 +31,10 @@
           <li>
         <form action="/login" method="post">
           <label for="email">Enter your Email </label>
-          <input id="email" type="text" name="email"/><br/>
-          <center><input type="submit" value="Go!"/></center>
+          <input id="email" type="text" name="email"/>
+          <input type="submit" value="Go!"/>
         </form></li>
+        <li>We'll send you a confirmation email, click the link inside</li>
       </ol>
     </div>
     <% end %>
