@@ -40,15 +40,45 @@ class NetflixItNow < Sinatra::Application
     erb :buttonizer
   end
 
+  get '/verify/:email/:guid' do
+    user = $coll.find("email" => params[:email]).first
+    if user["_id"].to_s == params[:guid]
+      user['verified'] = 1
+      $coll.update({"_id" => user["_id"]}, user)
+      return 'Success!'
+    else
+      return 'Failed...please contact support at /dev/null'
+    end
+  end
+
   post '/login' do
     session[:email] = params[:email]
     user = $coll.find("email" => session[:email]).first
     if user.nil?
-      $coll.insert({
+      guid = $coll.insert({
         "email" => session[:email],
         "tracked_movies" => [],
         "verified" => 0
       })
+      verify_link = @base_url + "/verify/#{session[:email]}/#{guid}"
+      Pony.mail(
+        :from => 'netflix-instant-reminder',
+        :to => session[:email],
+        :subject => 'Netflix Instant Reminder - Verify your account',
+        :headers => { 'Content-Type' => 'text/html' },
+        :body => erb('mailers/verify.html.erb'),
+        :port => '587',
+        :via => :smtp,
+        :via_options => {
+          :address => ENV['EMAIL_SERVICE'],
+          :port => '587',
+          :enable_starttls_autp => true,
+          :user_name => ENV['SENDGRID_USERNAME'],
+          :password => ENV['SENDGRID_PASSWORD'],
+          :authentication => :plain,
+          :domain => ENV['SENDGRID_DOMAIN']
+        })
+
     end
     redirect '/'
   end
