@@ -12,7 +12,7 @@ def connect_to_mongo
 end
 
 def load_email_template
-  $template = File.read('mailers/new_movies.html.erb')
+  $template = File.read('views/mailers/new_movies.html.erb')
 end
 
 def send_mail(email, movies)

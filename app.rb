@@ -3,6 +3,7 @@ require 'uri'
 require 'mongo'
 require 'json'
 require 'rack/cors'
+require 'pony'
 
 class NetflixItNow < Sinatra::Application
   set :static, true
@@ -66,7 +67,7 @@ class NetflixItNow < Sinatra::Application
         :to => session[:email],
         :subject => 'Netflix Instant Reminder - Verify your account',
         :headers => { 'Content-Type' => 'text/html' },
-        :body => erb('mailers/verify.html.erb'),
+        :body => "Thanks for signing up. Just click the link below to verify that you want to receive emails.<br/><br/><a href=\"#{base_url}#{verify_link}\">#{base_url}#{verify_link}</a>",
         :port => '587',
         :via => :smtp,
         :via_options => {
@@ -78,6 +79,7 @@ class NetflixItNow < Sinatra::Application
           :authentication => :plain,
           :domain => ENV['SENDGRID_DOMAIN']
         })
+      puts verify_link
 
     end
     redirect '/'
