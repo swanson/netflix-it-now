@@ -35,7 +35,6 @@ function req_success() {
 }
 
 function disp_requested_btn() {
-    GM_log("displaying request button");
     $(btn_id).removeClass().addClass(grey_btn_class);
     $(btn_id+">span").text("Requested!");
     $(btn_id).show();

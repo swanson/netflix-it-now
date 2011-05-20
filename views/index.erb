@@ -22,21 +22,32 @@
       </div>
     <% else %>
       <div id="login">
-        <h2 class="centered">Installation Instructions</h2>
-        <ol>
-          <li>Firefox users must install
-            <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/">
-            Greasemonkey</a> while Chome users can continue to the next step</li>
-          <li><a href="/buttonizer.user.js">Install the user script</a></li>
-          <li>
-        <form action="/login" method="post">
-          <label for="email">Enter your Email </label>
-          <input id="email" type="text" name="email"/>
-          <input type="submit" value="Go!"/>
-        </form></li>
-        <li>We'll send you a confirmation email, click the link inside</li>
-      </ol>
-    </div>
+        <h2 class="centered">Instructions</h2>
+        <% if browser == :other %>
+          <div class="centered">
+            Sorry, we only support <a href="http://google.com/chrome">Chrome</a> and <a href="http://firefox.com">Firefox</a>.
+          </div>
+        <% else %>
+          <ol>
+            <% if browser == :chrome %>
+              <li>Install the <a href="/buttonizer.crx">Chrome extension</a></li>
+            <% else %>
+              <li>Install the
+                <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/">
+                  Greasemonkey</a> Firefox extension</li>
+                <li>Install the <a href="/buttonizer.user.js">user script</a> for Greasemonkey</li>
+            <% end %>
+            <li>
+              <form action="/login" method="post">
+                <label for="email">Enter your Email </label>
+                <input id="email" type="text" name="email"/><br/>
+                <center><input type="submit" value="Go!"/></center>
+              </form>
+            </li>
+            <li>We'll send you a confirmation email, click the link inside</li>
+          </ol>
+        <% end %>
+      </div>
     <% end %>
   </div>
   <div id="footer">

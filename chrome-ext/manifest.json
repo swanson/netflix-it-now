@@ -1,0 +1,9 @@
+{
+	"name": "buttonizer",
+	"version": "0.1",
+	"description": "buttonizes",
+	"content_scripts": [{
+		"matches": ["http://movies.netflix.com/*"],
+		"js": ["jquery.js", "jquery-url.js", "json2.js", "buttonizer.js"]
+	}]
+}

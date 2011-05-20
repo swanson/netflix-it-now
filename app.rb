@@ -4,6 +4,7 @@ require 'mongo'
 require 'json'
 require 'rack/cors'
 require 'pony'
+require 'crxmake'
 
 class NetflixItNow < Sinatra::Application
   set :static, true
@@ -30,6 +31,29 @@ class NetflixItNow < Sinatra::Application
     def base_url
       @base_url ||= "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
     end
+
+    def browser
+      agent = request.env["HTTP_USER_AGENT"]
+      if agent =~ /Chrome/
+        return :chrome
+      elsif agent =~ /Firefox/
+        return :firefox
+      else
+        return :other
+      end
+    end
+
+    def chrome_bundle
+      t = Tempfile.new(["buttonizer-chrome-ext", ".crx"])
+      CrxMake.make(
+        :ex_dir => "./chrome-ext",
+        :ex_buffers => [[erb(:buttonizer), "buttonizer.js"],],
+        :crx_output => t.path
+      )
+      buf = IO.read(t.path)
+      t.close
+      @chrome_bundle ||= buf
+    end
   end
 
   get '/' do
@@ -39,6 +63,11 @@ class NetflixItNow < Sinatra::Application
   get '/buttonizer.user.js' do
     content_type :js
     erb :buttonizer
+  end
+  
+  get '/buttonizer.crx' do
+    content_type 'application/x-chrome-extension'
+    return chrome_bundle
   end
 
   get '/verify/:email/:guid' do
@@ -50,6 +79,11 @@ class NetflixItNow < Sinatra::Application
     else
       return 'Failed...please contact support at /dev/null'
     end
+  end
+
+  get '/buttonizer.crx' do
+    content_type 'application/x-chrome-extension'
+    return chrome_bundle
   end
 
   post '/login' do
@@ -113,7 +147,7 @@ class NetflixItNow < Sinatra::Application
     user = $coll.find("email" => session[:email]).first
     unless user.nil?
       # set the cache to expire in a day
-      headers["Cache-Control"] = "public, max-age=" + (60*60*24).to_s
+      cache_control :public, :max_age => 60*60*24
       return {:tracked => user["tracked_movies"]}.to_json
     else
       # no user found
