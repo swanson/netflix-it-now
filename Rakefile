@@ -49,7 +49,9 @@ task :cron do
     puts "Checking for #{user['email']}"
     new_movies = Array.new
     ids_to_remove = Array.new
-    
+
+    next if user['verified'] == 0 || user['verified'].nil?
+
     user['tracked_movies'].each do |id|
       if movie_cache.has_key?(id)
         puts 'Found it in the cache'

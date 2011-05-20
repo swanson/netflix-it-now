@@ -35,7 +35,8 @@ class NetflixItNow < Sinatra::Application
     if user.nil?
       $coll.insert({
         "email" => session[:email],
-        "tracked_movies" => []
+        "tracked_movies" => [],
+        "verified" => 0
       })
     end
     redirect '/'
