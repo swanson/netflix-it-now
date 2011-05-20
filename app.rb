@@ -60,7 +60,7 @@ class NetflixItNow < Sinatra::Application
         "tracked_movies" => [],
         "verified" => 0
       })
-      verify_link = @base_url + "/verify/#{session[:email]}/#{guid}"
+      verify_link = @base_url.to_s + "/verify/#{session[:email]}/#{guid}"
       Pony.mail(
         :from => 'netflix-instant-reminder',
         :to => session[:email],
