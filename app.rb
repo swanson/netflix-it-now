@@ -29,12 +29,15 @@ class NetflixItNow < Sinatra::Application
     erb :index
   end
 
-  get '/check' do
-    return session[:email]
-  end
-
   post '/login' do
     session[:email] = params[:email]
+    user = $coll.find("email" => session[:email]).first
+    if user.nil?
+      $coll.insert({
+        "email" => session[:email],
+        "tracked_movies" => []
+      })
+    end
     redirect '/'
   end
 
@@ -44,26 +47,26 @@ class NetflixItNow < Sinatra::Application
   end
 
   post '/track' do
-    user = $coll.find("email" => params[:email]).first
+    unless session[:email]
+      halt 401
+    end
+    user = $coll.find("email" => session[:email]).first
     unless user.nil?
       user['tracked_movies'] << params[:movie_id].to_i
       user['tracked_movies'].uniq!
       $coll.update({"_id" => user["_id"]}, user)
     else
-      $coll.insert({
-                    "email" => params[:email], 
-                    "tracked_movies" => [params[:movie_id].to_i,]
-      })
+      halt 401
     end
-    return 200
+    return
   end
 
   get '/tracked' do
-    if !request.cookies.key?("user")
-      return 401
+    unless session[:email]
+      # no user given
+      halt 401
     end
-    # FIXME: use cookies or something to get the user
-    user = $coll.find("email" => "jevin@purdue.edu").first
+    user = $coll.find("email" => session[:email]).first
     unless user.nil?
       # set the cache to expire in a day
       headers["Cache-Control"] = "public, max-age=" + (60*60*24).to_s

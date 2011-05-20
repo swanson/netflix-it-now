@@ -14,21 +14,29 @@
       <li><h3>Click the Instant Reminder button</h3></li>
       <li><h3>Get an email when the movie is available to stream</h3></li>
     </ul>
-    <div id="user-info" class="centered">
-      <span><% session[:email]%></span>
-      <% if session[:email] %>
-        Signed in as <% session[:email] %>.<br/>
-        <a href="/logout">Logout</a>
-      <% else %>
-        <form class="centered" action="/login" method="post">
-          <label for="email">Email: </label>
+    <% if session[:email] %>
+      <div id="user-info" class="centered">
+        Signed in as <%= session[:email] %>.<br/>
+        <a href="http://movies.netflix.com/MemberHome?lnkctr=mhbwse">Browse Netflix</a>
+        or <a href="/logout">Logout</a>
+      </div>
+    <% else %>
+      <div id="login">
+        <h2 class="centered">Instructions</h2>
+        <ol>
+          <li>Firefox users must install
+            <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/">
+            Greasemonkey</a> while Chome users can continue to the next step</li>
+          <li><a href="/buttonizer.user.js">Install the user script</a></li>
+          <li>
+        <form action="/login" method="post">
+          <label for="email">Enter your Email </label>
           <input id="email" type="text" name="email"/><br/>
-          <input type="submit" value="Go!"/>
-        </form>
-      <% end %>
-  </div>
-    <p class="centered">--- Installation Instructions ---</p>
-    <br/><br/><br/><br/><br/>
+          <center><input type="submit" value="Go!"/></center>
+        </form></li>
+      </ol>
+    </div>
+    <% end %>
   </div>
   <div id="footer">
     <p class="centered">
